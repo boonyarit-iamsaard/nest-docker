@@ -1,0 +1,23 @@
+version: '3.8'
+name: nest-docker
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Build the development stage only
+      target: development
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    # Run a command to start the development server
+    command: yarn start:dev
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - nest-app-network
+
+networks:
+  nest-app-network:
