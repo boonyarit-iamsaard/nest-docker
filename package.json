@@ -5,6 +5,11 @@
   "author": "Boonyarit Iamsa-ard",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": "please-use-yarn",
+    "yarn": ">=1.22.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
