@@ -1,20 +1,63 @@
+#-----------------------#
+# BUILD FOR DEVELOPMENT #
+#-----------------------#
+
 # Base image
-FROM node:16-alpine
+FROM node:16-alpine As development
 
 # Create app directory
 WORKDIR /usr/src/app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json .
+# Copy package.json and yarn.lock 
+COPY --chown=node:node package.json .
 
-# Install app dependencies using yarn that comes with node image
-RUN yarn install
+COPY --chown=node:node yarn.lock .
+
+# Install app dependencies using `yarn install --frozen-lockfile` to ensure that the lockfile is not updated
+RUN rm -rf node_modules \
+    && yarn install --frozen-lockfile 
 
 # Bundle app source
-COPY . .
+COPY --chown=node:node . .
 
-# Create a 'dist' folder with the production build
+# Use the node user from the base image instead of root
+USER node
+
+#-----------------------#
+# BUILD FOR PRODUCTION  #
+#-----------------------#
+
+FROM node:16-alpine As build
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node package.json .
+
+COPY --chown=node:node yarn.lock .
+
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+COPY --chown=node:node . .
+
 RUN yarn build
+
+ENV NODE_ENV=production
+
+RUN rm -rf node_modules \
+    && yarn install --production --frozen-lockfile \
+    && yarn cache clean --all
+
+USER node
+
+#-----------------------#
+# PRODUCTION            #
+#-----------------------#
+
+FROM node:16-alpine As production
+
+# Copy th bundle code from the build stage to the production image
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
