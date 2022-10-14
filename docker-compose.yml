@@ -18,6 +18,16 @@ services:
       - .:/usr/src/app
     networks:
       - nest-app-network
-
+  cache:
+    container_name: cache
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - nest-app-network
 networks:
   nest-app-network:
+volumes:
+  redis-data:
