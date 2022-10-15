@@ -7,7 +7,7 @@
 
 ## Acknowledgments
 
-This repository was built following [NestJS, Redis, and Postgres local development with a Docker Compose](https://www.tomray.dev/nestjs-docker-production) tutorial by [Tom Ray](https://www.tomray.dev/)
+This repository was built following [NestJS, Redis, and Postgres local development with a Docker Compose](https://www.tomray.dev/nestjs-docker-compose-postgres) tutorial by [Tom Ray](https://www.tomray.dev/)
 
 ## Author
 
