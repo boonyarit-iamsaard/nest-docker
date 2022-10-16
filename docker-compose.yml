@@ -6,16 +6,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # Build the development stage only
       target: development
+    init: true
     ports:
       - '3000:3000'
     env_file:
       - .env
-    # Run a command to start the development server
-    command: yarn start:dev
+    command: 'yarn start:dev'
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules
     networks:
       - nest-app-network
     depends_on:
@@ -37,11 +37,11 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: '${POSTGRES_DB}'
+      POSTGRES_USER: '${POSTGRES_USER}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - 'postgres-data:/var/lib/postgresql/data'
     networks:
       - nest-app-network
 networks:

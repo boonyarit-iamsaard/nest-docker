@@ -1,6 +1,7 @@
 import { LogLevel } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { PrismaService } from './prisma/services/prisma.service';
 
 async function bootstrap() {
   const levels: LogLevel[] =
@@ -11,6 +12,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: levels,
   });
+
+  // 👇 Listen to Prisma 'beforeExit' event
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
 
   await app.listen(3000);
 }

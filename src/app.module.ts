@@ -1,5 +1,4 @@
 import * as redisStore from 'cache-manager-redis-store';
-import * as Joi from 'joi';
 
 import { HttpModule } from '@nestjs/axios';
 import { CacheModule, MiddlewareConsumer, Module } from '@nestjs/common';
@@ -7,14 +6,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { configSchema } from './config/schema';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        REDIS_HOST: Joi.string().required(),
-        REDIS_PORT: Joi.number().required(),
-      }),
+      validationSchema: configSchema,
     }),
     CacheModule.registerAsync({
       imports: [ConfigModule],
@@ -27,6 +25,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
       inject: [ConfigService],
     }),
     HttpModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

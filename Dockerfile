@@ -3,7 +3,10 @@
 #-----------------------#
 
 # Base image
-FROM node:16-alpine As development
+FROM node:16 As development
+
+# Require for Prisma Client to work in the container
+RUN apt-get update && apt-get install -y openssl
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -19,6 +22,9 @@ RUN rm -rf node_modules \
 
 # Bundle app source
 COPY --chown=node:node . .
+
+# Generate Prisma Client
+RUN yarn prisma:generate
 
 # Use the node user from the base image instead of root
 USER node

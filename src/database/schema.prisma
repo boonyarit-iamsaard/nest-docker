@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  // 👇 Important to support Prisma Query engine in Alpine linux, otherwise "PrismaClientInitializationError2 [PrismaClientInitializationError]: Query engine binary for current platform "linux-musl" could not be found."
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  todos     Todo[]
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  completed Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+}
