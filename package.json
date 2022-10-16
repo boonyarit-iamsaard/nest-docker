@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-redis-postgres-docker",
+  "name": "nest-docker",
   "version": "0.0.1",
   "description": "NestJS, Redis, and Postgres local development with a Docker Compose",
   "author": "Boonyarit Iamsa-ard",
